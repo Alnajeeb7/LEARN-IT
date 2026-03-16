@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA0423 — Fundamentals of Data Science</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --surface2: #f0efe9;
+    --border: #e2e1da;
+    --border2: #d0cfc7;
+    --text: #1a1917;
+    --text2: #6b6a64;
+    --text3: #9b9a93;
+    --green: #1a7a55;
+    --green-bg: #e8f5ee;
+    --green-light: #d0eddd;
+    --red: #c0392b;
+    --red-bg: #fdf0ee;
+    --blue: #1a5a8a;
+    --blue-bg: #e8f0f8;
+    --amber: #8a5a1a;
+    --amber-bg: #f8f0e0;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  .app-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  /* HEADER */
+  .app-header {
+    margin-bottom: 2rem;
+  }
+  .app-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    margin-bottom: 2px;
+  }
+  .app-sub {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 1rem;
+  }
+  .progress-wrap {
+    background: var(--border);
+    border-radius: 99px;
+    height: 6px;
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 6px;
+    border-radius: 99px;
+    background: var(--green);
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 1.75rem;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.875rem 1rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .stat-num {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+    font-family: 'DM Mono', monospace;
+  }
+  .stat-lbl {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 3px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 1.5rem;
+    background: var(--surface2);
+    padding: 4px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab {
+    flex: 1;
+    min-width: 80px;
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    white-space: nowrap;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .tab:hover { color: var(--text); background: var(--border); }
+  .tab.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* TOPIC GRID */
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.125rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: var(--shadow);
+  }
+  .topic-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .tc-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  .tc-meta {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 10px;
+    font-family: 'DM Mono', monospace;
+  }
+  .tc-bar-wrap { background: var(--border); border-radius: 99px; height: 4px; overflow: hidden; }
+  .tc-bar-fill { height: 4px; border-radius: 99px; background: var(--green); transition: width 0.4s; }
+
+  /* MODE PILLS */
+  .mode-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .mode-pill {
+    padding: 5px 14px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    transition: all 0.15s;
+  }
+  .mode-pill:hover { border-color: var(--border2); color: var(--text); }
+  .mode-pill.active {
+    background: var(--text);
+    color: var(--surface);
+    border-color: var(--text);
+  }
+
+  /* CARD */
+  .study-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1rem;
+  }
+  .q-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.875rem;
+    flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 500;
+  }
+  .badge-blue { background: var(--blue-bg); color: var(--blue); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+
+  .q-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 1.125rem;
+  }
+  .ans-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.125rem;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    display: none;
+    margin-bottom: 1rem;
+  }
+  .ans-box.show { display: block; }
+
+  /* BUTTONS */
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+  }
+  .btn {
+    padding: 8px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    outline: none;
+  }
+  .btn:hover { background: var(--surface2); border-color: var(--border2); }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--text); color: var(--surface); border-color: var(--text); }
+  .btn-primary:hover { background: #333; }
+  .btn-green { border-color: var(--green); color: var(--green); }
+  .btn-green:hover { background: var(--green-bg); }
+  .btn-red { border-color: var(--red); color: var(--red); }
+  .btn-red:hover { background: var(--red-bg); }
+  .btn-blue { border-color: var(--blue); color: var(--blue); }
+  .btn-blue:hover { background: var(--blue-bg); }
+
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .nav-info {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* QUIZ */
+  .quiz-option {
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--surface);
+    transition: all 0.15s;
+    line-height: 1.5;
+  }
+  .quiz-option:hover { border-color: var(--border2); background: var(--surface2); }
+  .quiz-option.correct { border-color: var(--green); background: var(--green-bg); color: var(--green); font-weight: 500; }
+  .quiz-option.wrong { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+  .quiz-option.reveal-correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .quiz-option.disabled { pointer-events: none; }
+
+  /* SCORE */
+  .score-box {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .score-big {
+    font-size: 56px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    line-height: 1.1;
+  }
+  .score-msg {
+    font-size: 15px;
+    color: var(--text2);
+    margin-top: 10px;
+  }
+
+  /* SEARCH */
+  .search-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 1rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--border2); }
+  .search-result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.125rem;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+  .search-q { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .search-a { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+  /* REVIEW */
+  details {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  details[open] summary { border-bottom: 1px solid var(--border); }
+  summary {
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    background: var(--surface2);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; font-size: 18px; font-weight: 400; color: var(--text3); }
+  details[open] summary::after { content: '−'; }
+  .review-body { padding: 1rem 1.25rem; }
+  .review-item {
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .review-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .rq-num { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+  .rq-q { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+  .rq-a { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+  /* HIDDEN */
+  .hidden { display: none !important; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text3);
+    font-size: 14px;
+  }
+
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stat-num { font-size: 20px; }
+    .topic-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 380px) {
+    .topic-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="app-title">DSA0423 — Fundamentals of Data Science</div>
+    <div class="app-sub">300 questions &middot; 10 topics &middot; Interactive study system</div>
+    <div class="progress-wrap"><div class="progress-fill" id="global-bar"></div></div>
+    <div class="progress-label" id="global-pct">0 of 300 mastered</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="s-mastered">0</div><div class="stat-lbl">Mastered</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-seen">0</div><div class="stat-lbl">Seen</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-unseen">300</div><div class="stat-lbl">Unseen</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-streak">0</div><div class="stat-lbl">Streak</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showSection('topics')">Topics</button>
+    <button class="tab" onclick="showSection('flashcard')">Flashcards</button>
+    <button class="tab" onclick="showSection('quiz')">Quiz</button>
+    <button class="tab" onclick="showSection('search')">Search</button>
+    <button class="tab" onclick="showSection('review')">Review All</button>
+  </div>
+
+  <!-- TOPICS -->
+  <div id="sec-topics" class="section active">
+    <div class="topic-grid" id="topic-grid"></div>
+  </div>
+
+  <!-- FLASHCARD -->
+  <div id="sec-flashcard" class="section">
+    <div class="mode-pills" id="fc-mode-pills">
+      <button class="mode-pill active" onclick="setFCMode('all')">All (300)</button>
+      <button class="mode-pill" onclick="setFCMode('unseen')">Unseen</button>
+      <button class="mode-pill" onclick="setFCMode('review')">For Review</button>
+    </div>
+    <div id="fc-content">
+      <div class="study-card" id="fc-card">
+        <div class="q-meta" id="fc-meta"></div>
+        <div class="q-text" id="fc-q"></div>
+        <div class="ans-box" id="fc-ans"></div>
+        <div class="btn-row">
+          <button class="btn btn-blue" id="fc-show-btn" onclick="toggleAns()">Show answer</button>
+          <button class="btn btn-green hidden" id="btn-got" onclick="markMastered()">Got it &#10003;</button>
+          <button class="btn btn-red hidden" id="btn-miss" onclick="markReview()">Need review</button>
+        </div>
+        <div class="nav-row">
+          <button class="btn" onclick="fcPrev()">&larr; Prev</button>
+          <span class="nav-info" id="fc-pos"></span>
+          <button class="btn" onclick="fcNext()">Next &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="sec-quiz" class="section">
+    <div class="mode-pills" style="margin-bottom:0.5rem;">
+      <button class="mode-pill active" id="qz-all-pill" onclick="setQZTopic(-1)">All topics</button>
+    </div>
+    <div class="mode-pills" id="qz-topic-pills" style="margin-bottom:1rem;"></div>
+    <div id="qz-area">
+      <div class="study-card" id="qz-card">
+        <div class="q-meta" id="qz-meta"></div>
+        <div class="q-text" id="qz-q"></div>
+        <div id="qz-opts"></div>
+        <div class="btn-row hidden" id="qz-next-row">
+          <button class="btn btn-primary" onclick="nextQuizQ()">Next question &rarr;</button>
+        </div>
+      </div>
+    </div>
+    <div id="qz-score-area" class="hidden">
+      <div class="score-box">
+        <div class="score-big" id="qz-score-num"></div>
+        <div class="score-msg" id="qz-score-msg"></div>
+        <div class="btn-row" style="justify-content:center;margin-top:1.75rem;">
+          <button class="btn btn-primary" onclick="restartQuiz()">Try again</button>
+          <button class="btn" onclick="showSection('topics')">Back to topics</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div id="sec-search" class="section">
+    <input class="search-input" id="search-input" placeholder="Search questions or answers..." oninput="doSearch()" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+
+  <!-- REVIEW ALL -->
+  <div id="sec-review" class="section">
+    <p style="font-size:13px;color:var(--text3);margin-bottom:1rem;">All 300 Q&amp;A pairs organized by topic. Click a topic to expand.</p>
+    <div id="review-list"></div>
+  </div>
+
+</div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+var DATA = [
+  { t: "Big Data & Data Science Foundations", qs: [
+    { q: "What is the formal definition of Big Data?", a: "Big Data refers to extremely large and complex datasets that cannot be processed or analyzed using traditional data management tools, characterized by high volume, velocity, and variety." },
+    { q: "How is Data Science defined in the context of Big Data?", a: "Data Science is an interdisciplinary field that uses statistics, programming, and domain expertise to extract meaningful insights and knowledge from large and complex datasets." },
+    { q: "Explain the Crude Oil analogy regarding Big Data and Data Science.", a: "Just as crude oil is valuable only after refining, raw data becomes valuable only after it is processed and analyzed — Data Science is the refining process that transforms raw Big Data into useful insights." },
+    { q: "Define the 4 Vs that characterize Big Data.", a: "The 4 Vs are Volume (massive amount of data), Velocity (speed of data generation and processing), Variety (diverse types of data — structured, unstructured, semi-structured), and Veracity (quality and accuracy of the data)." },
+    { q: "What are the primary factors that set a Data Scientist apart from a Statistician?", a: "Data Scientists are distinguished by their strong programming skills, ability to handle large-scale unstructured data, machine learning expertise, and focus on building end-to-end data products, whereas Statisticians focus more on formal statistical inference." },
+    { q: "Which specific programming tools are more frequently associated with Data Scientists than Statisticians?", a: "Python, Spark, Hadoop, and machine learning libraries such as Scikit-learn and TensorFlow are more commonly associated with Data Scientists, compared to SAS or SPSS used by traditional Statisticians." },
+    { q: "Why has Python become a preferred language for Data Science?", a: "Python is preferred due to its simple syntax, rich ecosystem of data science libraries (Pandas, NumPy, Scikit-learn), versatility across the full data pipeline, and strong community support." },
+    { q: "How do commercial entities typically use Data Science to improve customer relations?", a: "Companies use Data Science for personalized product recommendations, customer segmentation, churn prediction, and sentiment analysis to better understand and serve their customers." },
+    { q: "Identify a real-world example of real-time personalized advertising.", a: "Google and Facebook use real-time ad targeting systems that analyze a user's browsing behavior and search history to serve highly relevant advertisements instantly." },
+    { q: "What is People Analytics in the corporate world?", a: "People Analytics is the use of data and statistical methods in HR to make evidence-based decisions about hiring, employee retention, performance, and workforce planning." },
+    { q: "Explain the central thesis of the book Moneyball regarding scouting.", a: "Moneyball argues that traditional subjective scouting in baseball is flawed, and that statistical analysis (sabermetrics) can identify undervalued players more effectively than conventional wisdom." },
+    { q: "In what ways do financial institutions leverage Data Science?", a: "Financial institutions use Data Science for credit risk assessment, fraud detection, algorithmic trading, customer analytics, portfolio optimization, and regulatory compliance." },
+    { q: "Who are Quants in the financial industry?", a: "Quants (quantitative analysts) are professionals who apply advanced mathematical and statistical models to solve financial problems, develop trading strategies, and manage risk." },
+    { q: "How do governmental organizations utilize Data Science for public safety?", a: "Governments use Data Science for predictive policing, disease surveillance, traffic management, emergency resource allocation, and national security threat detection." },
+    { q: "What is the purpose of the Data.gov portal?", a: "Data.gov is the U.S. government's open data portal that provides free public access to federal datasets to promote transparency, research, and innovation." },
+    { q: "How did the NSA use Big Data according to the Edward Snowden leaks?", a: "According to Snowden's revelations, the NSA used Big Data technologies to conduct mass surveillance by collecting and analyzing vast amounts of global communications data, including phone metadata and internet activity." },
+    { q: "How does the World Wildlife Fund (WWF) use Data Science?", a: "WWF uses Data Science to monitor deforestation via satellite imagery, track endangered species, predict poaching hotspots, and optimize conservation resource allocation." },
+    { q: "What is the mission of the group DataKind?", a: "DataKind's mission is to mobilize volunteer data scientists to collaborate with nonprofits and NGOs to tackle social challenges such as poverty, health, and disaster response using Data Science." },
+    { q: "How has the rise of MOOCs impacted Data Science in universities?", a: "MOOCs have democratized access to Data Science education, expanded the workforce of trained practitioners, and pressured universities to update their curricula to remain competitive." },
+    { q: "Name the three major MOOC platforms referenced as resources for data scientists.", a: "The three major MOOC platforms are Coursera, edX, and Udacity." },
+    { q: "Provide an example of high-volume data in professional sports.", a: "The NBA's player tracking system generates millions of data points per game by recording player and ball movement 25 times per second using arena-mounted cameras." },
+    { q: "Define the Industrial Internet.", a: "The Industrial Internet (IIoT) refers to the integration of internet-connected sensors and data analytics into industrial machinery to optimize performance, enable predictive maintenance, and improve operational efficiency." },
+    { q: "How does Data Science optimize logistics and shipping?", a: "Data Science optimizes logistics through route optimization algorithms, demand forecasting, real-time fleet tracking, warehouse management, and predictive vehicle maintenance." },
+    { q: "Can Data Science predict political outcomes?", a: "Yes, to a meaningful degree — statistical models aggregating polling data, economic indicators, and demographic variables can forecast electoral outcomes, though unpredictable voter behavior limits their accuracy." },
+    { q: "What is the role of Data Science in healthcare training?", a: "Data Science supports healthcare training through clinical simulation models, AI-driven decision support tools, educational analytics that personalize learning, and analysis of medical literature to guide evidence-based practice." }
+  ]},
+  { t: "The Data Science Process", qs: [
+    { q: "What are the six standard steps of the Data Science Process?", a: "The six steps are: (1) Setting the Research Goal, (2) Retrieving Data, (3) Data Preparation, (4) Data Exploration (EDA), (5) Data Modeling, and (6) Presentation and Automation." },
+    { q: "What is the primary objective of setting the research goal?", a: "The primary objective is to clearly define the business problem, establish measurable success criteria, and ensure all analytical activities are aligned with meaningful organizational objectives." },
+    { q: "What is a Project Charter?", a: "A Project Charter is a formal document that defines a data science project's scope, objectives, deliverables, stakeholders, methodology, and timeline to align the team and business stakeholders." },
+    { q: "What does the Mission and Context section of a project charter explain?", a: "It explains the organizational background, strategic rationale, and business problem that the project is designed to address, providing context for all subsequent project decisions." },
+    { q: "Why is it vital to avoid skimming over the business goal definition?", a: "Vague business goals lead to misaligned analyses, wasted resources, and deliverables that fail to address the actual business question or drive meaningful decisions." },
+    { q: "What occurs during the step of retrieving data?", a: "Data is identified, located, accessed, and extracted from relevant internal or external sources such as databases, APIs, or flat files based on the project's data needs." },
+    { q: "Where is the most logical place to start looking for data?", a: "The most logical starting point is the organization's own internal data repositories, such as operational databases, data warehouses, or data lakes." },
+    { q: "Define a Data Lake.", a: "A Data Lake is a centralized repository that stores large volumes of raw structured and unstructured data in its native format until it is needed for analysis." },
+    { q: "Explain the concept of Chinese Walls in data retrieval.", a: "Chinese Walls are internal policies or access controls that prevent sensitive information from flowing between certain departments to avoid conflicts of interest or legal violations." },
+    { q: "What is Open Data?", a: "Open Data is data made freely available to the public without copyright or licensing restrictions, typically published by governments or institutions to promote transparency and innovation." },
+    { q: "What is the main goal of the data preparation step?", a: "The main goal is to transform raw, error-prone data into a clean, consistent, and analysis-ready dataset by addressing missing values, errors, duplicates, and formatting issues." },
+    { q: "Identify the three sub-phases of Data Preparation.", a: "The three sub-phases are Data Cleaning (correcting errors), Data Integration (combining sources), and Data Transformation (converting data into an analysis-suitable format)." },
+    { q: "Explain the phrase 'Garbage in equals garbage out.'", a: "This principle means that no matter how sophisticated the analytical method, if the input data is flawed or of poor quality, the outputs will also be inaccurate and unreliable." },
+    { q: "What is the goal of Data Exploration or Exploratory Data Analysis?", a: "The goal is to understand the data's structure, distributions, patterns, and relationships through visual and statistical techniques before formal modeling begins." },
+    { q: "How does EDA differ from Data Cleansing?", a: "Data Cleansing fixes known errors in the data, while EDA is a discovery process aimed at understanding patterns and distributions — though EDA can reveal additional issues requiring further cleansing." },
+    { q: "What is the purpose of Data Modeling?", a: "Data Modeling applies statistical or machine learning algorithms to prepared data to generate predictions, classifications, or insights that answer the research question." },
+    { q: "Why is the data science process described as iterative?", a: "It is iterative because findings at any stage may require revisiting earlier steps — for example, poor model performance may necessitate more data cleaning or re-engineering of features." },
+    { q: "What is Model Diagnostics?", a: "Model Diagnostics is the evaluation of a trained model's performance, assumptions, and error patterns to determine its validity and readiness for deployment." },
+    { q: "What happens during the Presentation and Automation step?", a: "Findings are communicated to stakeholders through reports and dashboards, and the model or pipeline may be deployed into production for automated, ongoing use." },
+    { q: "What is Prototype Mode in the data science process?", a: "Prototype Mode is an early exploratory phase where the data scientist rapidly tests ideas and approaches on small data samples to assess feasibility before investing in a full production solution." },
+    { q: "How does a Data Mart differ from a Data Warehouse?", a: "A Data Mart is a smaller, department-specific subset of a Data Warehouse, containing only the data relevant to a particular business unit, whereas a Data Warehouse covers the entire organization." },
+    { q: "Why is a structured approach beneficial for team environments?", a: "A structured approach ensures all team members follow a common framework, enabling effective collaboration, clear role definitions, and consistent, reproducible outputs." },
+    { q: "In the retrieving data phase, what is the very first check performed?", a: "The first check is to determine whether the required data already exists within the organization's internal systems before seeking external data sources." },
+    { q: "What constitutes deliverables in the context of a project charter?", a: "Deliverables are the tangible outputs the project is expected to produce, such as predictive models, analytical reports, dashboards, or data pipelines." },
+    { q: "What is the Analysis Plan?", a: "The Analysis Plan outlines the specific analytical methods, tools, and techniques that will be used to address the research question and achieve the project goals." },
+    { q: "What is the risk of a Lone Wolf project?", a: "A Lone Wolf project — conducted by a single individual without stakeholder input or structured oversight — risks producing results that are misaligned with business needs and lack validation." },
+    { q: "Is the data science process strictly linear?", a: "No, the data science process is iterative and cyclical — insights or problems at any stage may require returning to and repeating earlier steps." },
+    { q: "Who are stakeholders in a data science project?", a: "Stakeholders are all individuals or groups who have an interest in the project's outcomes, including business decision-makers, end users, data owners, and technical team members." },
+    { q: "How does data ownership affect retrieval?", a: "Data ownership determines access rights — data scientists may be legally or organizationally restricted from accessing certain datasets owned by other departments or protected by privacy regulations." },
+    { q: "When is a structured approach most necessary?", a: "A structured approach is most necessary in large team environments, long-term projects, or high-stakes business contexts where coordination, reproducibility, and accountability are critical." }
+  ]},
+  { t: "Data Types & Varieties", qs: [
+    { q: "Define structured data.", a: "Structured data is organized in a fixed, predefined format — typically in rows and columns — that can be easily stored, searched, and queried in relational databases." },
+    { q: "Provide an example of structured data.", a: "A customer database table containing columns for name, age, email address, and purchase amount is an example of structured data." },
+    { q: "Define unstructured data.", a: "Unstructured data lacks a predefined format or organization, making it difficult to store and analyze using traditional relational databases (e.g., images, videos, emails, social media posts)." },
+    { q: "Provide an example of unstructured data.", a: "A collection of customer review text comments or social media posts is an example of unstructured data." },
+    { q: "Define natural language data.", a: "Natural language data is text or speech produced by humans in everyday language, such as emails, articles, social media posts, or spoken conversations." },
+    { q: "What is the core challenge of natural language data?", a: "The core challenge is that human language is inherently ambiguous, context-dependent, and complex, making it difficult for computers to interpret meaning accurately." },
+    { q: "Define machine-generated data.", a: "Machine-generated data is data automatically produced by computers, sensors, or machines without human involvement, such as server logs, sensor readings, or transaction records." },
+    { q: "Give three examples of machine-generated data.", a: "Three examples are: web server log files, temperature readings from IoT sensors, and automated financial transaction records." },
+    { q: "Define graph-based or network data.", a: "Graph-based data represents relationships and connections between entities (nodes) using edges, and is used to model networks such as social networks, transportation systems, or the internet." },
+    { q: "What is mathematical graph theory?", a: "Graph theory is a branch of mathematics that studies graphs — structures made of nodes (vertices) connected by edges — to analyze relationships and network properties." },
+    { q: "Give an example of graph-based data.", a: "A social network like Facebook, where users are nodes and friendships are edges connecting them, is a classic example of graph-based data." },
+    { q: "Define streaming data.", a: "Streaming data is data generated continuously and in real-time from sources like sensors, social media feeds, or financial transactions, requiring immediate or near-immediate processing." },
+    { q: "Give an example of streaming data.", a: "Real-time stock market price feeds or live Twitter posts are examples of streaming data." },
+    { q: "What is a node in graph data?", a: "A node (or vertex) is an individual entity in a graph, such as a person in a social network or a city in a transportation network." },
+    { q: "What is an edge in graph data?", a: "An edge is a connection or relationship between two nodes in a graph, such as a friendship between two users or a road between two cities." },
+    { q: "How is audio or video data typically analyzed?", a: "Audio and video data is typically converted into numerical representations (spectrograms for audio, pixel arrays for video) and analyzed using signal processing techniques or deep learning models." },
+    { q: "What is telemetry?", a: "Telemetry is the automated collection and transmission of data from remote sensors or machines to a central system for monitoring and analysis." },
+    { q: "Is a family tree considered structured or unstructured data?", a: "A family tree is considered graph-based (network) data, as it represents hierarchical relationships between individuals using nodes and edges." },
+    { q: "What is sentiment analysis?", a: "Sentiment analysis is a natural language processing technique that identifies and extracts the emotional tone (positive, negative, or neutral) from text data." },
+    { q: "What is entity recognition?", a: "Entity recognition (NER) is an NLP technique that identifies and classifies named entities in text, such as people, organizations, locations, and dates." },
+    { q: "What is the Internet of Things (IoT)?", a: "The Internet of Things (IoT) is a network of physical devices embedded with sensors and internet connectivity that collect and exchange data automatically." },
+    { q: "Why is streaming data treated as a distinct facet?", a: "Streaming data is distinct because it is continuous, time-sensitive, and must often be processed in real-time, requiring specialized tools and architectures different from batch-processed static datasets." },
+    { q: "What is the benefit of overlapping graphs?", a: "Overlapping graphs allow analysts to layer multiple network relationships over the same set of nodes, revealing complex, multi-dimensional relationships that would be invisible in a single graph." },
+    { q: "What tool is used to query graph databases?", a: "Cypher is the query language used for graph databases like Neo4j; SPARQL is used for RDF-based graph databases." },
+    { q: "Give an example of a metric derived from graph data.", a: "Degree centrality — the number of connections a node has — is a common graph metric used to identify the most influential individuals in a social network." }
+  ]},
+  { t: "Data Cleaning & Preparation", qs: [
+    { q: "Define an interpretation error in data cleansing.", a: "An interpretation error occurs when data is recorded or entered incorrectly due to misunderstanding of meaning, such as confusing a date format (DD/MM vs MM/DD)." },
+    { q: "What is an inconsistency error?", a: "An inconsistency error occurs when the same attribute is represented differently across records, such as a country field containing both 'USA' and 'United States.'" },
+    { q: "How do you remove leading and trailing spaces in Python?", a: "In Python, the .strip() method removes leading and trailing whitespace from a string (e.g., ' hello '.strip() returns 'hello')." },
+    { q: "How do you handle capital letter mismatches in Python?", a: "Use .lower() to convert all strings to lowercase or .upper() for uppercase, ensuring consistent capitalization across a column." },
+    { q: "What are the two general strategies for dealing with missing values?", a: "The two strategies are: (1) omission — removing records with missing values, and (2) imputation — filling in missing values using estimates such as the mean, median, or a predictive model." },
+    { q: "What is imputation?", a: "Imputation is the process of replacing missing data values with estimated substitutes, such as the column mean, median, mode, or values predicted by a model." },
+    { q: "What is a sanity check in data cleaning?", a: "A sanity check is a validation step that verifies whether data values are logically plausible (e.g., ensuring age is not negative or a sale date does not precede the product launch date)." },
+    { q: "What is an outlier?", a: "An outlier is a data point that deviates significantly from the majority of other observations, which may indicate a data entry error, measurement error, or a genuinely rare event." },
+    { q: "How can outliers be detected on simple variables?", a: "Outliers can be detected visually using box plots or histograms, or statistically using z-scores (values beyond 3 standard deviations) or the IQR (interquartile range) method." },
+    { q: "What is a code book?", a: "A code book is a reference document that explains the meaning, format, units, and valid values of each variable in a dataset, serving as a guide for correct data interpretation." },
+    { q: "What is data integration?", a: "Data integration is the process of combining data from multiple different sources into a unified, coherent dataset for analysis." },
+    { q: "Define joining in the context of data integration.", a: "Joining is the process of merging two datasets horizontally by matching rows based on a common key variable (similar to a SQL JOIN operation)." },
+    { q: "What is appending or stacking in data integration?", a: "Appending (stacking) is the process of combining two datasets vertically by adding the rows of one dataset below the rows of another that share the same structure." },
+    { q: "What is a view in a database?", a: "A view is a virtual table in a database that is defined by a query and presents data from one or more underlying tables without storing the data physically." },
+    { q: "What is a primary key?", a: "A primary key is a unique identifier for each record in a database table, ensuring that no two rows have the same value in that column." },
+    { q: "What is data transformation?", a: "Data transformation is the process of converting data from one format, scale, or structure to another to make it suitable for analysis (e.g., log scaling, normalization, encoding categories)." },
+    { q: "Why is a log transformation used?", a: "A log transformation is used to reduce the skewness of a highly skewed variable, making it more normally distributed and stabilizing variance, which improves the performance of many statistical models." },
+    { q: "What are dummy variables?", a: "Dummy variables are binary (0/1) variables created to numerically represent categorical variables so they can be used in mathematical models (e.g., encoding 'Male' as 0 and 'Female' as 1)." },
+    { q: "Why should data be cleansed as early as possible?", a: "Early cleansing prevents errors from propagating through the analysis pipeline, saving time and ensuring that all subsequent steps — EDA, modeling — are based on reliable data." },
+    { q: "What is a transmission error?", a: "A transmission error is a data corruption that occurs during the transfer of data from one system to another, resulting in incorrect or missing values in the received dataset." },
+    { q: "Explain standardizing units in data preparation.", a: "Standardizing units means ensuring that all values for a given variable use the same unit of measurement (e.g., converting all distances to kilometers) to allow valid comparisons and analysis." },
+    { q: "What is an aggregation level mismatch?", a: "An aggregation level mismatch occurs when data from different sources is recorded at different levels of granularity (e.g., one source has daily sales and another has monthly sales), requiring alignment before integration." },
+    { q: "How are redundant characters in a string typically handled?", a: "Redundant characters (such as extra spaces, special characters, or punctuation) are removed using string methods like .replace(), .strip(), or regular expressions in Python." },
+    { q: "What is the risk of imputing a static value?", a: "Imputing a fixed static value (e.g., always replacing missing values with zero) can introduce bias into the data if zero is not a meaningful or accurate representation of the missing value." },
+    { q: "What is the disadvantage of omitting missing values?", a: "Omitting records with missing values reduces the dataset size, potentially introducing selection bias and reducing the statistical power of the analysis if data is not missing at random." },
+    { q: "When is imputing a static value like zero appropriate?", a: "Imputing zero is appropriate when a missing value logically means the absence of something, such as zero purchases for a customer who has no transaction history." },
+    { q: "What is set difference used for in data cleaning?", a: "Set difference is used to identify records that exist in one dataset but not another, helping to detect missing or orphaned records during data integration or validation." },
+    { q: "Which Pandas function identifies duplicate rows?", a: "The duplicated() function in Pandas identifies duplicate rows by returning a boolean Series indicating which rows are duplicates." },
+    { q: "Which Pandas function removes duplicate rows?", a: "The drop_duplicates() function in Pandas removes duplicate rows from a DataFrame." },
+    { q: "How do you fill all missing values with a specific value in Pandas?", a: "Use the fillna() method — for example, df.fillna(0) replaces all missing (NaN) values in the DataFrame with zero." },
+    { q: "What is data scrubbing?", a: "Data scrubbing is another term for data cleaning — the process of detecting and correcting or removing inaccurate, incomplete, or irrelevant records from a dataset." },
+    { q: "Why should you keep a copy of original data?", a: "Keeping a copy of the original raw data ensures that you can recover from mistakes made during cleaning or transformation and provides an auditable trail of changes." },
+    { q: "What does ETL stand for?", a: "ETL stands for Extract, Transform, Load — the process of extracting data from source systems, transforming it into the required format, and loading it into a destination system such as a data warehouse." },
+    { q: "What is a manual overrule in data cleaning?", a: "A manual overrule is a human decision to override or correct a specific data value based on domain knowledge or expert judgment, rather than applying an automated cleaning rule." },
+    { q: "What does a null value usually represent?", a: "A null value typically represents missing, unknown, or inapplicable data — it indicates that no value was recorded or that the field does not apply to that particular record." }
+  ]},
+  { t: "Exploratory Data Analysis (EDA)", qs: [
+    { q: "What is the primary tool used in exploratory data analysis?", a: "Data visualization is the primary tool in EDA, as graphs and charts reveal patterns, distributions, and relationships in data far more intuitively than raw numbers alone." },
+    { q: "What is a Pareto diagram?", a: "A Pareto diagram is a bar chart sorted in descending order of frequency, often combined with a cumulative line chart, used to identify the most significant factors contributing to a problem (based on the 80-20 rule)." },
+    { q: "What is a histogram?", a: "A histogram is a bar chart that displays the frequency distribution of a continuous variable by dividing data into intervals (bins) and showing the count of observations in each bin." },
+    { q: "Explain link and brush in data visualization.", a: "Link and brush is an interactive technique where selecting (brushing) data points in one chart automatically highlights the corresponding points in other linked charts, enabling multi-dimensional exploration." },
+    { q: "What is a Sankey diagram?", a: "A Sankey diagram is a flow diagram where the width of the arrows or bands is proportional to the quantity of flow between nodes, commonly used to visualize energy, material, or user journey flows." },
+    { q: "Identify two nongraphical techniques used in EDA.", a: "Two nongraphical techniques are tabulation (frequency tables showing counts of categories) and computing descriptive statistics (mean, median, standard deviation, etc.)." },
+    { q: "What is tabulation?", a: "Tabulation is the organization of data into a frequency table that shows how often each value or category appears in a dataset." },
+    { q: "What is a bar chart?", a: "A bar chart is a graphical representation that uses rectangular bars of varying lengths to compare the values of different categories of a variable." },
+    { q: "What is a line graph used for in EDA?", a: "A line graph is used to visualize trends and changes in a variable over time, making it particularly useful for time-series data." },
+    { q: "What is the primary goal of exploratory data analysis?", a: "The primary goal of EDA is to understand the dataset's structure, distributions, and relationships, and to generate hypotheses that guide the modeling phase." },
+    { q: "What is overlaying in data visualization?", a: "Overlaying is the practice of plotting multiple datasets or variables on the same chart to facilitate direct visual comparison of their distributions or trends." },
+    { q: "What is interactive exploration?", a: "Interactive exploration is the use of dynamic, user-controlled tools (such as dashboards or interactive notebooks) that allow analysts to filter, zoom, and drill down into data in real-time." },
+    { q: "What is a distribution in data analysis?", a: "A distribution describes how the values of a variable are spread across its range, showing which values are most common and how frequently different values occur." },
+    { q: "What are diagnostic plots?", a: "Diagnostic plots are visualizations used to check whether the assumptions of a statistical model are satisfied, such as residual plots, Q-Q plots, and scale-location plots." },
+    { q: "Define correlation in EDA.", a: "Correlation measures the strength and direction of the linear relationship between two variables, ranging from -1 (perfect negative) to +1 (perfect positive)." },
+    { q: "What is the use of clustering during the EDA phase?", a: "During EDA, clustering is used as an exploratory technique to discover natural groupings or segments within the data without predefined labels." },
+    { q: "What is the 80-20 rule?", a: "The 80-20 rule (Pareto Principle) states that approximately 80% of effects come from 20% of causes — for example, 80% of sales come from 20% of customers." },
+    { q: "List three common descriptive statistics.", a: "Three common descriptive statistics are the mean (average), median (middle value), and standard deviation (measure of spread)." },
+    { q: "How can EDA help identify data cleansing issues?", a: "EDA can reveal previously undetected anomalies such as unexpected outliers, impossible values, skewed distributions, or suspicious patterns that indicate data quality problems." },
+    { q: "Explain scatter plot linkage.", a: "Scatter plot linkage is an interactive technique where selecting points in one scatter plot automatically highlights the same observations in other charts, enabling cross-variable exploration." },
+    { q: "What is aggregate measure enrichment?", a: "Aggregate measure enrichment involves adding new summary-level features (such as customer average spend or regional totals) to individual records to provide additional analytical context." },
+    { q: "What is a frequency table?", a: "A frequency table is a tabular summary that lists each unique value or category of a variable alongside its count and/or percentage of total occurrences." },
+    { q: "What is topic recognition in text exploration?", a: "Topic recognition (topic modeling) is a technique used during text EDA to automatically identify recurring themes or subjects within a large collection of documents." },
+    { q: "What is binning?", a: "Binning is the process of grouping continuous values into discrete intervals (bins) to simplify analysis and reveal patterns, such as grouping ages into ranges like 0-18, 19-35, 36-55." },
+    { q: "How do interactive dashboards assist stakeholders?", a: "Interactive dashboards allow non-technical stakeholders to explore data visually in real-time, filter results, and drill down into details without requiring programming skills." }
+  ]},
+  { t: "Statistical Modeling & Mathematics", qs: [
+    { q: "What is the Euclidean distance formula for two dimensions?", a: "For two points (x1, y1) and (x2, y2), Euclidean distance = sqrt((x2-x1)^2 + (y2-y1)^2)." },
+    { q: "Extend the Euclidean distance formula to three dimensions.", a: "For points (x1,y1,z1) and (x2,y2,z2), Euclidean distance = sqrt((x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2)." },
+    { q: "What p-value is commonly used as a threshold for significance?", a: "A p-value of 0.05 (5%) is the most commonly used threshold for statistical significance, meaning results with p < 0.05 are considered statistically significant." },
+    { q: "What does the p-value indicate in a model?", a: "The p-value indicates the probability of observing the results (or more extreme results) by chance alone if the null hypothesis were true — a low p-value suggests the result is statistically significant." },
+    { q: "What is R-squared?", a: "R-squared (coefficient of determination) measures the proportion of variance in the dependent variable that is explained by the independent variables in a regression model, ranging from 0 to 1." },
+    { q: "How does adjusted R-squared differ from R-squared?", a: "Adjusted R-squared penalizes the addition of irrelevant predictor variables by adjusting for the number of predictors, making it a more reliable measure of model fit than plain R-squared." },
+    { q: "What is the Gaussian distribution?", a: "The Gaussian distribution (normal distribution) is a symmetric, bell-shaped probability distribution defined by its mean and standard deviation, where most values cluster around the mean." },
+    { q: "Define the harmonic mean in the context of metrics.", a: "The harmonic mean is a type of average that gives greater weight to smaller values; in metrics like F1-score, it balances precision and recall by penalizing large differences between them." },
+    { q: "What is a coefficient in a linear model?", a: "A coefficient is a numerical value that represents the estimated effect of a predictor variable on the outcome — it indicates how much the dependent variable changes for a one-unit change in the predictor." },
+    { q: "Define mean squared error.", a: "Mean Squared Error (MSE) is the average of the squared differences between predicted and actual values, measuring the magnitude of error in a regression model — lower MSE indicates better model fit." },
+    { q: "What is time complexity?", a: "Time complexity describes how the runtime of an algorithm grows relative to the size of its input, used to evaluate the efficiency and scalability of computational methods." },
+    { q: "Explain exponential time complexity.", a: "Exponential time complexity means the algorithm's runtime doubles (or grows by a fixed factor) with each additional unit of input, making it impractical for large datasets." },
+    { q: "What is the basis of Euclidean distance?", a: "Euclidean distance is based on the Pythagorean theorem — it measures the straight-line (shortest) distance between two points in multi-dimensional space." },
+    { q: "Define the hypotenuse.", a: "The hypotenuse is the longest side of a right-angled triangle, opposite the right angle, and forms the basis of the Pythagorean theorem used in Euclidean distance calculation." },
+    { q: "What is linearity in a model?", a: "Linearity means the relationship between the predictor variables and the outcome is a straight line (in 2D) or a flat hyperplane (in higher dimensions), a key assumption in linear regression." },
+    { q: "Define homoscedasticity.", a: "Homoscedasticity means the variance of the residuals (errors) is constant across all levels of the independent variable — a key assumption of linear regression models." },
+    { q: "What is multicollinearity?", a: "Multicollinearity occurs when two or more predictor variables in a regression model are highly correlated with each other, making it difficult to isolate the individual effect of each predictor." },
+    { q: "When would you use a log transformation on an independent variable?", a: "A log transformation on an independent variable is used when the relationship between the predictor and the outcome is multiplicative or exponential rather than linear." },
+    { q: "Why do Euclidean distance-based models struggle with many variables?", a: "With many variables, all data points tend to become equidistant from each other (the curse of dimensionality), making distance-based comparisons meaningless and model performance poor." },
+    { q: "What is standard deviation?", a: "Standard deviation is a measure of the spread or dispersion of data values around the mean — a higher standard deviation indicates greater variability in the dataset." },
+    { q: "What is statistical inference?", a: "Statistical inference is the process of drawing conclusions about a population based on analysis of a sample, using techniques such as hypothesis testing and confidence intervals." },
+    { q: "Briefly explain the Bayesian paradigm.", a: "The Bayesian paradigm incorporates prior beliefs or existing knowledge into statistical analysis and updates them with new evidence to produce posterior probability estimates." },
+    { q: "What is a holdout sample?", a: "A holdout sample is a portion of the dataset set aside and not used during model training, reserved exclusively for evaluating the model's performance on unseen data." },
+    { q: "What is a constant prediction model?", a: "A constant prediction model always predicts the same value (such as the mean of the target variable) regardless of the input features, serving as a simple baseline for comparison." },
+    { q: "Define variation in the context of R-squared.", a: "Variation refers to how much the values of the dependent variable differ from each other; R-squared measures how much of this total variation is explained by the model's predictors." }
+  ]},
+  { t: "Machine Learning Algorithms", qs: [
+    { q: "What is supervised learning?", a: "Supervised learning is a machine learning approach where a model is trained on labeled data — input-output pairs — so it can learn to predict the output for new, unseen inputs." },
+    { q: "Define linear regression.", a: "Linear regression is a statistical model that estimates the relationship between one or more predictor variables and a continuous outcome variable by fitting a straight line to the data." },
+    { q: "What is logistic regression used for?", a: "Logistic regression is used for binary classification tasks — it models the probability that an observation belongs to one of two categories (e.g., spam vs. not spam)." },
+    { q: "What is the difference between regression and classification?", a: "Regression predicts a continuous numerical output (e.g., house price), while classification predicts a discrete categorical label (e.g., yes/no, cat/dog)." },
+    { q: "How does the k-nearest neighbors algorithm work?", a: "KNN classifies a new data point by finding the k most similar (nearest) training examples and assigning the majority class among those neighbors as the prediction." },
+    { q: "What is a decision tree?", a: "A decision tree is a supervised learning model that splits data into branches based on feature conditions, creating a tree-like structure of decisions that leads to a predicted outcome." },
+    { q: "What is feature engineering?", a: "Feature engineering is the process of creating new input variables from raw data or transforming existing ones to improve a model's predictive performance." },
+    { q: "How do you execute a model in Python?", a: "After importing the relevant library (e.g., Scikit-learn), you instantiate the model, fit it to training data using .fit(), and generate predictions using .predict()." },
+    { q: "What is model training?", a: "Model training is the process of feeding labeled data into a machine learning algorithm so it can learn the patterns and relationships needed to make accurate predictions." },
+    { q: "What is model validation?", a: "Model validation is the process of evaluating a trained model's performance on a separate validation dataset to assess how well it generalizes to new, unseen data." },
+    { q: "What is prediction bias?", a: "Prediction bias occurs when the average of a model's predictions systematically differs from the average of the actual values, indicating a consistent over- or under-estimation." },
+    { q: "Define a feature vector.", a: "A feature vector is an ordered list (array) of numerical values representing the input attributes of a single observation, used as the input to a machine learning model." },
+    { q: "What is overfitting?", a: "Overfitting occurs when a model learns the training data too well — including its noise — and performs poorly on new, unseen data because it has failed to generalize." },
+    { q: "What is generalization in machine learning?", a: "Generalization is a model's ability to perform well on new, unseen data beyond the training set, indicating it has learned meaningful patterns rather than memorizing the training examples." },
+    { q: "What is L2 regularization?", a: "L2 regularization (Ridge) adds a penalty equal to the sum of squared coefficients to the loss function, discouraging large weights and helping to prevent overfitting." },
+    { q: "What are hyperparameters?", a: "Hyperparameters are model settings that are specified before training begins (e.g., learning rate, number of trees, k in KNN) and control the model's training process rather than being learned from data." },
+    { q: "What is gradient descent?", a: "Gradient descent is an optimization algorithm that iteratively adjusts model parameters in the direction that reduces the loss function, moving toward the minimum error." },
+    { q: "What is a binary classifier?", a: "A binary classifier is a model that assigns each observation to one of exactly two possible classes or categories (e.g., positive/negative, true/false)." },
+    { q: "What is multi-class classification?", a: "Multi-class classification involves predicting which of three or more distinct categories an observation belongs to (e.g., classifying an image as cat, dog, or bird)." },
+    { q: "What is loss in machine learning?", a: "Loss (or cost) is a function that measures the difference between the model's predictions and the actual target values — minimizing loss is the objective of model training." },
+    { q: "What is the sigmoid function?", a: "The sigmoid function maps any real-valued number to a value between 0 and 1, making it useful for converting raw model outputs into probabilities in logistic regression and neural networks." },
+    { q: "What is a classification threshold?", a: "A classification threshold is a cutoff value (typically 0.5) applied to predicted probabilities to convert them into class labels — probabilities above the threshold are classified as positive." },
+    { q: "What is the tradeoff when increasing the threshold?", a: "Increasing the classification threshold increases precision (fewer false positives) but decreases recall (more false negatives) — the two metrics move in opposite directions." },
+    { q: "Identify the primary Python library for machine learning.", a: "Scikit-learn (sklearn) is the primary Python library for machine learning, offering tools for classification, regression, clustering, and model evaluation." },
+    { q: "Which Python library provides detailed statistical model summaries?", a: "The Statsmodels library provides detailed statistical summaries for models, including coefficients, p-values, confidence intervals, and goodness-of-fit metrics." },
+    { q: "How does cross-validation help a model?", a: "Cross-validation reduces the risk of overfitting by repeatedly splitting the data into different training and validation sets, providing a more reliable estimate of model performance." },
+    { q: "What is feature selection?", a: "Feature selection is the process of identifying and retaining only the most relevant input variables, removing irrelevant or redundant ones to improve model performance and interpretability." },
+    { q: "What is the coefficient of determination?", a: "The coefficient of determination (R-squared) measures the proportion of variance in the dependent variable explained by the model, indicating goodness of fit on a scale of 0 to 1." },
+    { q: "Define a predictor variable.", a: "A predictor variable (also called a feature or independent variable) is an input variable used by a model to predict or explain the target (dependent) variable." }
+  ]},
+  { t: "Unsupervised Learning", qs: [
+    { q: "What is unsupervised learning?", a: "Unsupervised learning is a machine learning approach where the model finds patterns and structure in data that has no predefined labels or target variable." },
+    { q: "Define clustering in unsupervised learning.", a: "Clustering is an unsupervised technique that groups observations into clusters based on similarity, so that items within the same cluster are more similar to each other than to those in other clusters." },
+    { q: "How does k-means clustering function?", a: "K-means assigns each data point to the nearest of k cluster centroids, then recalculates the centroids as the mean of all assigned points, repeating until the assignments stabilize." },
+    { q: "What is principal component analysis?", a: "PCA is a dimensionality reduction technique that transforms the original variables into a smaller set of uncorrelated components (principal components) that capture the maximum variance in the data." },
+    { q: "Why is PCA used in data science projects?", a: "PCA is used to reduce the number of variables, eliminate multicollinearity, speed up model training, and enable 2D or 3D visualization of high-dimensional data." },
+    { q: "What is the first principal component in PCA?", a: "The first principal component is the linear combination of original variables that captures the greatest amount of variance in the dataset." },
+    { q: "What is the second principal component in PCA?", a: "The second principal component captures the second largest amount of variance and is constrained to be orthogonal (uncorrelated) to the first principal component." },
+    { q: "What is dimensionality reduction?", a: "Dimensionality reduction is the process of reducing the number of input features or variables in a dataset while retaining as much useful information as possible." },
+    { q: "Define customer segmentation.", a: "Customer segmentation is the process of dividing a customer base into distinct groups based on shared characteristics, behaviors, or needs to enable targeted marketing and service." },
+    { q: "What is a centroid?", a: "A centroid is the center point of a cluster in k-means clustering, calculated as the mean of all data points assigned to that cluster." },
+    { q: "On what basis does k-means assign an observation to a cluster?", a: "K-means assigns each observation to the cluster whose centroid is nearest, measured by Euclidean distance." },
+    { q: "What is variation retention in PCA?", a: "Variation retention refers to the proportion of the total variance in the original dataset that is preserved by the selected principal components — higher retention means less information loss." },
+    { q: "What is pattern discovery?", a: "Pattern discovery is the process of identifying meaningful regularities, structures, or relationships within data that were not previously known, common in unsupervised learning." },
+    { q: "What is hierarchical clustering?", a: "Hierarchical clustering builds a tree-like structure (dendrogram) of nested clusters by either progressively merging smaller clusters (agglomerative) or splitting larger ones (divisive)." },
+    { q: "Define latent variables.", a: "Latent variables are hidden or unobserved factors that are not directly measured but are inferred from observable data — for example, 'intelligence' inferred from test scores." },
+    { q: "What is noise in data analysis?", a: "Noise refers to random variation or irrelevant information in the data that obscures true underlying patterns and can degrade model performance if not managed." },
+    { q: "How can PCA assist in 2D visualization?", a: "PCA can reduce a high-dimensional dataset to two principal components, allowing data points to be plotted on a 2D scatter plot for visual exploration of clusters and patterns." },
+    { q: "What is market basket analysis?", a: "Market basket analysis is an unsupervised technique that identifies products frequently purchased together, using association rules to uncover co-occurrence patterns in transaction data." },
+    { q: "What is a scree plot?", a: "A scree plot is a line graph showing the amount of variance explained by each principal component in PCA, used to decide how many components to retain." },
+    { q: "Define association rules.", a: "Association rules are if-then statements that describe relationships between items in a dataset (e.g., customers who buy bread also buy butter), commonly used in market basket analysis." },
+    { q: "Is PCA a linear or nonlinear technique?", a: "PCA is a linear dimensionality reduction technique — it finds linear combinations of the original variables to form the principal components." },
+    { q: "What are the BASE principles of NoSQL?", a: "BASE stands for Basically Available (the system remains operational), Soft state (data may be temporarily inconsistent), and Eventually consistent (consistency is achieved over time)." },
+    { q: "What is the CAP theorem?", a: "The CAP theorem states that a distributed data system can only guarantee two of three properties simultaneously: Consistency, Availability, and Partition tolerance." },
+    { q: "How is unsupervised learning used in fraud detection?", a: "Unsupervised learning detects fraud by identifying anomalous transactions that deviate significantly from normal behavioral patterns, without requiring predefined fraud labels." }
+  ]},
+  { t: "Model Evaluation Metrics", qs: [
+    { q: "Define accuracy.", a: "Accuracy is the proportion of total predictions that the model got correct, calculated as (True Positives + True Negatives) / Total Predictions." },
+    { q: "What is the mathematical formula for accuracy?", a: "Accuracy = (TP + TN) / (TP + TN + FP + FN), where TP = true positives, TN = true negatives, FP = false positives, FN = false negatives." },
+    { q: "Why is accuracy misleading for imbalanced datasets?", a: "In imbalanced datasets, a model can achieve high accuracy simply by always predicting the majority class, while completely failing to identify the minority class of interest." },
+    { q: "Define true positive.", a: "A true positive (TP) is a case where the model correctly predicts the positive class — both the predicted and actual labels are positive." },
+    { q: "Define true negative.", a: "A true negative (TN) is a case where the model correctly predicts the negative class — both the predicted and actual labels are negative." },
+    { q: "Define false positive.", a: "A false positive (FP) is a case where the model incorrectly predicts positive when the actual label is negative — also called a Type I error." },
+    { q: "Define false negative.", a: "A false negative (FN) is a case where the model incorrectly predicts negative when the actual label is positive — also called a Type II error." },
+    { q: "What is recall?", a: "Recall measures the proportion of actual positives that the model correctly identified, reflecting the model's ability to find all positive cases." },
+    { q: "What is the formula for recall?", a: "Recall = TP / (TP + FN) — the number of true positives divided by the total number of actual positives." },
+    { q: "Identify two other names for recall.", a: "Recall is also known as Sensitivity and True Positive Rate (TPR)." },
+    { q: "What is precision?", a: "Precision measures the proportion of predicted positives that are actually positive, reflecting how reliable the model's positive predictions are." },
+    { q: "What is the formula for precision?", a: "Precision = TP / (TP + FP) — the number of true positives divided by the total number of predicted positives." },
+    { q: "What is the false positive rate?", a: "The false positive rate measures the proportion of actual negatives that the model incorrectly classified as positive." },
+    { q: "What is the formula for false positive rate?", a: "False Positive Rate = FP / (FP + TN) — false positives divided by the total number of actual negatives." },
+    { q: "What is another name for false positive rate?", a: "The false positive rate is also known as the Fall-out rate." },
+    { q: "What is the F1-score?", a: "The F1-score is the harmonic mean of precision and recall, providing a single balanced metric that accounts for both false positives and false negatives." },
+    { q: "What is the formula for the F1-score?", a: "F1 = 2 x (Precision x Recall) / (Precision + Recall)." },
+    { q: "When should recall be prioritized?", a: "Recall should be prioritized when the cost of missing a positive case is high, such as in disease diagnosis or detecting dangerous equipment failures." },
+    { q: "When should precision be prioritized?", a: "Precision should be prioritized when the cost of false alarms is high, such as in spam filtering (to avoid blocking legitimate emails) or legal decisions." },
+    { q: "What is a confusion matrix?", a: "A confusion matrix is a table that summarizes the classification model's performance by displaying the counts of true positives, true negatives, false positives, and false negatives." },
+    { q: "Explain the spam example for precision.", a: "In spam detection, high precision means that emails flagged as spam are almost certainly spam — prioritizing precision avoids incorrectly filtering legitimate emails into the spam folder." },
+    { q: "Explain the invasive species detection scenario for recall.", a: "In invasive species detection, high recall ensures that nearly all actual invasive species are identified — missing one (false negative) could allow it to spread, making recall more critical than precision." },
+    { q: "What does NaN indicate in metric calculations?", a: "NaN (Not a Number) in metric calculations typically indicates a division by zero error — for example, precision is undefined (NaN) when the model makes no positive predictions." },
+    { q: "What is an ROC curve?", a: "An ROC (Receiver Operating Characteristic) curve plots the True Positive Rate against the False Positive Rate at various classification thresholds, visualizing the tradeoff between sensitivity and specificity." },
+    { q: "What is AUC?", a: "AUC (Area Under the ROC Curve) is a single scalar value summarizing overall model performance — a value of 1 indicates a perfect classifier, and 0.5 indicates random guessing." },
+    { q: "How does the F1-score behave when precision and recall differ greatly?", a: "When precision and recall differ greatly, the F1-score is pulled sharply toward the lower of the two values, penalizing large imbalances between them." },
+    { q: "Is it true that a perfect model has an FPR of 0?", a: "Yes, a perfect model has a false positive rate of 0 (no actual negatives are misclassified as positive) and a recall of 1 (all actual positives are correctly identified)." },
+    { q: "Why is recall more meaningful than accuracy in imbalanced datasets?", a: "Recall directly measures how well the model identifies the minority (positive) class, whereas accuracy is dominated by the majority class and can be misleadingly high even with a poor classifier." },
+    { q: "What is volatility in false positive rate?", a: "Volatility in FPR refers to how sensitive the false positive rate is to small changes in the classification threshold — it can fluctuate significantly when the number of actual negatives is small." },
+    { q: "What happens to recall if the classification threshold decreases?", a: "Lowering the classification threshold increases recall (more positives are predicted, catching more true positives) but typically decreases precision (more false positives are also introduced)." },
+    { q: "What is prevalence?", a: "Prevalence is the proportion of positive cases in a dataset, indicating how common the positive class is relative to the total number of observations." },
+    { q: "Is precision meaningful if there are only a few positive examples?", a: "Precision can be unstable and misleading when there are very few positive examples, as a small number of false positives can drastically change the precision value." },
+    { q: "What is the accuracy of a model that always predicts negative in a dataset with 1% positives?", a: "Such a model would achieve 99% accuracy, illustrating why accuracy alone is a poor metric for highly imbalanced datasets." },
+    { q: "What is threshold tuning?", a: "Threshold tuning is the process of adjusting the classification threshold to optimize the balance between precision and recall based on the specific cost requirements of the application." },
+    { q: "When is the false positive rate most useful?", a: "The false positive rate is most useful when evaluating models where incorrectly labeling a negative as positive has significant costs, such as in medical screening or security alert systems." },
+    { q: "Why is the harmonic mean preferred for the F1-score?", a: "The harmonic mean is preferred because it penalizes extreme imbalances between precision and recall — if either metric is very low, the F1-score will also be low, reflecting poor overall performance." }
+  ]},
+  { t: "Big Data Tools & Technologies", qs: [
+    { q: "What is HDFS?", a: "HDFS (Hadoop Distributed File System) is a distributed storage system designed to store very large files across multiple machines in a Hadoop cluster with fault tolerance." },
+    { q: "Define MapReduce.", a: "MapReduce is a programming model for processing large datasets in parallel across a distributed cluster — the Map phase processes and filters data, and the Reduce phase aggregates the results." },
+    { q: "What is Apache Spark?", a: "Apache Spark is a fast, in-memory distributed computing framework for big data processing that supports batch processing, streaming, machine learning, and SQL queries." },
+    { q: "What is YARN used for?", a: "YARN (Yet Another Resource Negotiator) is the resource management layer of Hadoop that allocates CPU and memory resources across applications running in the cluster." },
+    { q: "Identify the four NoSQL database types.", a: "The four NoSQL types are: Key-Value stores (e.g., Redis), Document stores (e.g., MongoDB), Column-family databases (e.g., Cassandra), and Graph databases (e.g., Neo4j)." },
+    { q: "What is a column database?", a: "A column database stores data by columns rather than rows, making it highly efficient for analytical queries that aggregate values across large numbers of rows for specific columns." },
+    { q: "What is a document store?", a: "A document store is a NoSQL database that stores data as semi-structured documents (typically JSON or BSON), allowing flexible schemas and nested data structures." },
+    { q: "Define a key-value store.", a: "A key-value store is a simple NoSQL database that stores data as pairs of unique keys and associated values, offering very fast lookups by key." },
+    { q: "Which tool allows querying Hadoop data using SQL syntax?", a: "Apache Hive allows users to query data stored in Hadoop using HiveQL, a SQL-like query language, without needing to write MapReduce code directly." },
+    { q: "What is Apache Sqoop?", a: "Apache Sqoop is a tool for efficiently transferring bulk data between Hadoop and relational databases (like MySQL or Oracle) in both directions." },
+    { q: "What is Apache Flume?", a: "Apache Flume is a distributed service for reliably collecting, aggregating, and moving large volumes of streaming log or event data into Hadoop HDFS." },
+    { q: "Define horizontal scaling.", a: "Horizontal scaling (scaling out) means adding more machines to a distributed system to increase capacity, rather than upgrading the power of a single machine." },
+    { q: "Define vertical scaling.", a: "Vertical scaling (scaling up) means upgrading the hardware of a single machine (more RAM, faster CPU) to increase its capacity, as opposed to adding more machines." },
+    { q: "What is NewSQL?", a: "NewSQL databases are modern relational databases designed to provide the scalability of NoSQL systems while maintaining the ACID guarantees of traditional relational databases." },
+    { q: "What is Storm used for?", a: "Apache Storm is a real-time distributed stream processing system used for processing continuous, unbounded streams of data with very low latency." },
+    { q: "What is Zookeeper?", a: "Apache Zookeeper is a centralized coordination service for distributed systems that manages configuration, synchronization, naming, and group services across cluster nodes." },
+    { q: "How does a distributed file system manage files larger than a single computer's storage?", a: "It splits large files into fixed-size blocks and distributes those blocks across multiple machines in the cluster, with replicas stored on different nodes for fault tolerance." },
+    { q: "What is REST?", a: "REST (Representational State Transfer) is an architectural style for building web services that communicate over HTTP using standard operations like GET, POST, PUT, and DELETE." },
+    { q: "What is Oozie?", a: "Apache Oozie is a workflow scheduler system for Hadoop that manages and coordinates the execution of dependent jobs (MapReduce, Hive, Pig) in a defined sequence." },
+    { q: "Define Mahout.", a: "Apache Mahout is a scalable machine learning library built on Hadoop that provides distributed implementations of algorithms for clustering, classification, and collaborative filtering." },
+    { q: "What is HCatalog?", a: "HCatalog is a table and storage management layer for Hadoop that provides a unified metadata view of data stored in HDFS, enabling tools like Hive, Pig, and MapReduce to share schemas." },
+    { q: "What is Beeswax?", a: "Beeswax is a web-based user interface within the Hue Hadoop UI that allows users to write, execute, and manage Hive queries interactively through a browser." },
+    { q: "What is a virtual machine?", a: "A virtual machine (VM) is a software emulation of a physical computer that runs an operating system and applications independently on shared physical hardware." },
+    { q: "What is Pig in the Hadoop ecosystem?", a: "Apache Pig is a high-level scripting platform for Hadoop that uses a language called Pig Latin to express data transformation and analysis workflows that compile to MapReduce jobs." },
+    { q: "What is the Hortonworks Sandbox?", a: "The Hortonworks Sandbox is a pre-configured virtual machine containing a single-node Hadoop cluster, allowing developers and learners to explore and test Hadoop and its ecosystem tools locally." },
+    { q: "Why do traditional relational databases fail to scale on many nodes?", a: "Relational databases enforce ACID properties and rigid schemas that require expensive coordination across nodes, making horizontal scaling across distributed systems very difficult." },
+    { q: "What is a Pandas Series?", a: "A Pandas Series is a one-dimensional labeled array that can hold data of any type, similar to a single column in a spreadsheet." },
+    { q: "What is a Pandas DataFrame?", a: "A Pandas DataFrame is a two-dimensional, tabular data structure with labeled rows and columns, similar to a spreadsheet or SQL table, and is the primary structure for data manipulation in Pandas." },
+    { q: "What is the index in Pandas?", a: "The index in Pandas is the row label system of a Series or DataFrame, used to identify and access rows — by default it is an integer range starting at 0." },
+    { q: "How do you create a DataFrame in Python?", a: "A DataFrame can be created using pd.DataFrame() by passing a dictionary, list of lists, NumPy array, or by reading a file using functions like pd.read_csv()." },
+    { q: "What is the object data type in Pandas?", a: "The object data type in Pandas represents columns containing text strings or mixed types, equivalent to Python's string type." },
+    { q: "Define the float64 data type.", a: "float64 is a Pandas data type for columns containing 64-bit floating-point (decimal) numbers, used for continuous numerical variables." },
+    { q: "Why is the int64 data type effective for counts?", a: "int64 stores 64-bit integers with no decimal component, making it memory-efficient and exact for representing count or discrete numerical data." },
+    { q: "What is datetime64?", a: "datetime64 is a Pandas data type for storing date and time values, enabling time-based operations like resampling, date arithmetic, and time-series analysis." },
+    { q: "Define the category data type.", a: "The category data type in Pandas is used for columns with a limited set of discrete values (like gender or country), saving memory and improving performance on grouping operations." },
+    { q: "How do you load a CSV file into Pandas?", a: "Use pd.read_csv('filename.csv') to load a CSV file into a Pandas DataFrame." },
+    { q: "What is Boolean indexing in Pandas?", a: "Boolean indexing filters rows of a DataFrame based on a condition that returns True or False for each row (e.g., df[df['age'] > 30] returns only rows where age exceeds 30)." },
+    { q: "Which Pandas function is used for data grouping?", a: "The groupby() function is used to group data by one or more columns and apply aggregate functions (sum, mean, count, etc.) to each group." },
+    { q: "What is the focus of the NLTK library?", a: "NLTK (Natural Language Toolkit) is a Python library focused on natural language processing, providing tools for tokenization, stemming, parsing, and text classification." },
+    { q: "What is Matplotlib?", a: "Matplotlib is a Python library for creating static, interactive, and animated data visualizations, including line charts, bar charts, histograms, and scatter plots." },
+    { q: "What is TensorFlow?", a: "TensorFlow is an open-source machine learning framework developed by Google, primarily used for building and training deep learning and neural network models." },
+    { q: "What is the Bag of Words model?", a: "The Bag of Words model represents text as an unordered collection of words with their frequency counts, ignoring grammar and word order, used as a simple feature representation for NLP tasks." },
+    { q: "Define stemming.", a: "Stemming is a text normalization technique that reduces words to their root form by removing suffixes (e.g., 'running' to 'run'), without necessarily producing a valid dictionary word." },
+    { q: "How does lemmatization differ from stemming?", a: "Unlike stemming, lemmatization reduces words to their proper dictionary base form (lemma) by considering the word's meaning and part of speech (e.g., 'better' to 'good'), producing valid words." },
+    { q: "What is a text corpus?", a: "A text corpus is a large, structured collection of text documents used as training or reference data for natural language processing and text mining tasks." },
+    { q: "Explain topic recognition.", a: "Topic recognition (topic modeling) is an NLP technique that automatically identifies the main themes or subjects present in a collection of documents, commonly using algorithms like LDA (Latent Dirichlet Allocation)." }
+  ]}
+];
+
+// ─── BUILD FLAT INDEX ─────────────────────────────────────────────────────────
+var ALL = [];
+DATA.forEach(function(topic, ti) {
+  topic.qs.forEach(function(q, qi) {
+    ALL.push({ q: q.q, a: q.a, topic: topic.t, topicIdx: ti, id: ti + '-' + qi });
+  });
+});
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+var STATE = {
+  mastered: {},
+  review: {},
+  seen: {},
+  streak: 0,
+  fcMode: 'all',
+  fcList: [],
+  fcIdx: 0,
+  ansShown: false,
+  qzTopicFilter: -1,
+  qzList: [],
+  qzIdx: 0,
+  qzCorrect: 0
+};
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+function el(id) { return document.getElementById(id); }
+function qs(sel) { return document.querySelector(sel); }
+function setHtml(id, html) { el(id).innerHTML = html; }
+function setText(id, txt) { el(id).textContent = txt; }
+function show(id) { el(id).classList.remove('hidden'); }
+function hide(id) { el(id).classList.add('hidden'); }
+function masteredCount() { return Object.keys(STATE.mastered).length; }
+function seenCount() { return Object.keys(STATE.seen).length; }
+
+// ─── STATS ────────────────────────────────────────────────────────────────────
+function updateStats() {
+  var m = masteredCount(), s = seenCount(), total = ALL.length;
+  setText('s-mastered', m);
+  setText('s-seen', s);
+  setText('s-unseen', total - s);
+  setText('s-streak', STATE.streak);
+  var pct = Math.round(m / total * 100);
+  el('global-bar').style.width = pct + '%';
+  setText('global-pct', m + ' of ' + total + ' mastered (' + pct + '%)');
+  renderTopicGrid();
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+var SECTIONS = ['topics', 'flashcard', 'quiz', 'search', 'review'];
+function showSection(sec) {
+  SECTIONS.forEach(function(s) {
+    el('sec-' + s).classList.toggle('active', s === sec);
+    el('sec-' + s).classList.toggle('hidden-section', s !== sec);
+  });
+  var tabs = document.querySelectorAll('.tab');
+  SECTIONS.forEach(function(s, i) { tabs[i].classList.toggle('active', s === sec); });
+  if (sec === 'flashcard') initFC();
+  if (sec === 'quiz') initQZ();
+  if (sec === 'review') renderReview();
+}
+
+// override hidden-section with display:none via style since we're toggling active class
+var style = document.createElement('style');
+style.textContent = '.section:not(.active){display:none;}';
+document.head.appendChild(style);
+
+// ─── TOPIC GRID ───────────────────────────────────────────────────────────────
+function renderTopicGrid() {
+  var g = el('topic-grid');
+  var html = '';
+  DATA.forEach(function(topic, ti) {
+    var topicItems = ALL.filter(function(q) { return q.topicIdx === ti; });
+    var m = topicItems.filter(function(q) { return STATE.mastered[q.id]; }).length;
+    var pct = Math.round(m / topicItems.length * 100);
+    html += '<div class="topic-card" onclick="startTopicFC(' + ti + ')">' +
+      '<div class="tc-name">' + topic.t + '</div>' +
+      '<div class="tc-meta">' + topicItems.length + ' Q &middot; ' + m + ' mastered &middot; ' + pct + '%</div>' +
+      '<div class="tc-bar-wrap"><div class="tc-bar-fill" style="width:' + pct + '%"></div></div>' +
+      '</div>';
+  });
+  g.innerHTML = html;
+}
+
+function startTopicFC(ti) {
+  STATE.fcMode = 'topic';
+  STATE.fcList = ALL.filter(function(q) { return q.topicIdx === ti; });
+  STATE.fcIdx = 0;
+  showSection('flashcard');
+}
+
+// ─── FLASHCARD ────────────────────────────────────────────────────────────────
+function setFCMode(mode) {
+  STATE.fcMode = mode;
+  var pills = el('fc-mode-pills').querySelectorAll('.mode-pill');
+  var modes = ['all', 'unseen', 'review'];
+  modes.forEach(function(m, i) { pills[i].classList.toggle('active', m === mode); });
+  initFC();
+}
+
+function initFC() {
+  if (STATE.fcMode === 'all') STATE.fcList = ALL.slice();
+  else if (STATE.fcMode === 'unseen') STATE.fcList = ALL.filter(function(q) { return !STATE.seen[q.id]; });
+  else if (STATE.fcMode === 'review') STATE.fcList = ALL.filter(function(q) { return STATE.review[q.id]; });
+  if (!STATE.fcList.length) {
+    var msg = STATE.fcMode === 'review' ? 'No cards marked for review yet.' : 'All cards have been seen!';
+    setHtml('fc-meta', '');
+    setText('fc-q', msg);
+    el('fc-ans').classList.remove('show');
+    setText('fc-pos', '');
+    hide('btn-got'); hide('btn-miss');
+    el('fc-show-btn').textContent = 'Show answer';
+    return;
+  }
+  STATE.fcIdx = 0;
+  renderFC();
+}
+
+function renderFC() {
+  if (!STATE.fcList.length) return;
+  var q = STATE.fcList[STATE.fcIdx];
+  STATE.seen[q.id] = true;
+  STATE.ansShown = false;
+  var meta = '<span class="badge badge-blue">' + q.topic + '</span>';
+  if (STATE.mastered[q.id]) meta += ' <span class="badge badge-green">mastered</span>';
+  if (STATE.review[q.id]) meta += ' <span class="badge badge-amber">for review</span>';
+  setHtml('fc-meta', meta);
+  setText('fc-q', q.q);
+  setText('fc-ans', q.a);
+  el('fc-ans').classList.remove('show');
+  el('fc-show-btn').textContent = 'Show answer';
+  hide('btn-got'); hide('btn-miss');
+  setText('fc-pos', (STATE.fcIdx + 1) + ' / ' + STATE.fcList.length);
+  updateStats();
+}
+
+function toggleAns() {
+  if (!STATE.fcList.length) return;
+  var box = el('fc-ans');
+  box.classList.toggle('show');
+  STATE.ansShown = box.classList.contains('show');
+  el('fc-show-btn').textContent = STATE.ansShown ? 'Hide answer' : 'Show answer';
+  if (STATE.ansShown) { show('btn-got'); show('btn-miss'); }
+  else { hide('btn-got'); hide('btn-miss'); }
+}
+
+function markMastered() {
+  if (!STATE.fcList.length) return;
+  var q = STATE.fcList[STATE.fcIdx];
+  STATE.mastered[q.id] = true;
+  delete STATE.review[q.id];
+  STATE.streak++;
+  fcNext();
+}
+
+function markReview() {
+  if (!STATE.fcList.length) return;
+  var q = STATE.fcList[STATE.fcIdx];
+  STATE.review[q.id] = true;
+  delete STATE.mastered[q.id];
+  STATE.streak = 0;
+  fcNext();
+}
+
+function fcNext() {
+  if (STATE.fcIdx < STATE.fcList.length - 1) {
+    STATE.fcIdx++;
+    renderFC();
+  } else {
+    setHtml('fc-meta', '');
+    setText('fc-q', 'End of this deck! Great work.');
+    el('fc-ans').classList.remove('show');
+    setText('fc-pos', '');
+    hide('btn-got'); hide('btn-miss');
+    el('fc-show-btn').textContent = 'Show answer';
+    updateStats();
+  }
+}
+
+function fcPrev() {
+  if (STATE.fcIdx > 0) { STATE.fcIdx--; renderFC(); }
+}
+
+// ─── QUIZ ─────────────────────────────────────────────────────────────────────
+function initQZTopicPills() {
+  var container = el('qz-topic-pills');
+  if (container.childElementCount > 0) return;
+  DATA.forEach(function(topic, ti) {
+    var btn = document.createElement('button');
+    btn.className = 'mode-pill';
+    btn.textContent = topic.t.split(' ').slice(0, 3).join(' ') + '...';
+    btn.onclick = (function(i) { return function() { setQZTopic(i); }; })(ti);
+    container.appendChild(btn);
+  });
+}
+
+function setQZTopic(t) {
+  STATE.qzTopicFilter = t;
+  el('qz-all-pill').classList.toggle('active', t === -1);
+  var pills = el('qz-topic-pills').querySelectorAll('.mode-pill');
+  pills.forEach(function(p, i) { p.classList.toggle('active', i === t); });
+  initQZ();
+}
+
+function initQZ() {
+  initQZTopicPills();
+  var pool = STATE.qzTopicFilter === -1
+    ? ALL.slice()
+    : ALL.filter(function(q) { return q.topicIdx === STATE.qzTopicFilter; });
+  STATE.qzList = shuffle(pool).slice(0, 15);
+  STATE.qzIdx = 0;
+  STATE.qzCorrect = 0;
+  hide('qz-score-area');
+  show('qz-area');
+  renderQZ();
+}
+
+function renderQZ() {
+  if (STATE.qzIdx >= STATE.qzList.length) { showQZScore(); return; }
+  var q = STATE.qzList[STATE.qzIdx];
+  STATE.seen[q.id] = true;
+  setHtml('qz-meta', 'Question ' + (STATE.qzIdx + 1) + ' of ' + STATE.qzList.length +
+    ' &nbsp;<span class="badge badge-blue">' + q.topic + '</span>');
+  setText('qz-q', q.q);
+  var correctA = q.a;
+  var sameTopicWrong = ALL.filter(function(x) { return x.id !== q.id && x.topicIdx === q.topicIdx; });
+  var anyWrong = ALL.filter(function(x) { return x.id !== q.id; });
+  var wrongPool = sameTopicWrong.length >= 3 ? sameTopicWrong : anyWrong;
+  var opts = shuffle([correctA].concat(shuffle(wrongPool).slice(0, 3).map(function(x) { return x.a; })));
+  var container = el('qz-opts');
+  container.innerHTML = '';
+  container.dataset.answered = '';
+  opts.forEach(function(opt) {
+    var d = document.createElement('div');
+    d.className = 'quiz-option';
+    d.textContent = opt.length > 130 ? opt.substring(0, 130) + '...' : opt;
+    d.onclick = function() {
+      if (container.dataset.answered === '1') return;
+      container.dataset.answered = '1';
+      var correct = (opt === correctA);
+      if (correct) {
+        d.classList.add('correct');
+        STATE.qzCorrect++;
+        STATE.mastered[q.id] = true;
+        STATE.streak++;
+      } else {
+        d.classList.add('wrong');
+        STATE.streak = 0;
+        STATE.review[q.id] = true;
+        container.querySelectorAll('.quiz-option').forEach(function(o) {
+          if (o.textContent === correctA || correctA.startsWith(o.textContent.replace('...', ''))) {
+            o.classList.add('reveal-correct');
+          }
+        });
+        // highlight correct by text match
+        container.querySelectorAll('.quiz-option').forEach(function(o) {
+          if (!o.classList.contains('wrong') && !o.classList.contains('reveal-correct')) {
+            var oText = o.textContent;
+            if (correctA.indexOf(oText.replace('...','').trim()) === 0 || oText.indexOf(correctA.substring(0,30)) === 0) {
+              o.classList.add('reveal-correct');
+            }
+          }
+        });
+      }
+      container.querySelectorAll('.quiz-option').forEach(function(o) { o.classList.add('disabled'); });
+      show('qz-next-row');
+      updateStats();
+    };
+    container.appendChild(d);
+  });
+  hide('qz-next-row');
+}
+
+function nextQuizQ() { STATE.qzIdx++; renderQZ(); }
+
+function showQZScore() {
+  hide('qz-area');
+  show('qz-score-area');
+  var pct = Math.round(STATE.qzCorrect / STATE.qzList.length * 100);
+  setText('qz-score-num', STATE.qzCorrect + '/' + STATE.qzList.length + ' (' + pct + '%)');
+  setText('qz-score-msg', pct >= 80 ? 'Excellent! Keep it up!' : pct >= 60 ? 'Good progress — review the ones you missed.' : 'Keep studying, you\'ve got this!');
+}
+
+function restartQuiz() {
+  hide('qz-score-area');
+  show('qz-area');
+  initQZ();
+}
+
+// ─── SEARCH ───────────────────────────────────────────────────────────────────
+function doSearch() {
+  var term = el('search-input').value.toLowerCase().trim();
+  var res = el('search-results');
+  if (!term) { res.innerHTML = ''; return; }
+  var found = ALL.filter(function(q) {
+    return q.q.toLowerCase().indexOf(term) !== -1 || q.a.toLowerCase().indexOf(term) !== -1;
+  }).slice(0, 25);
+  if (!found.length) {
+    res.innerHTML = '<div class="empty-state">No results found for "' + term + '"</div>';
+    return;
+  }
+  res.innerHTML = found.map(function(q) {
+    return '<div class="search-result-card">' +
+      '<div style="margin-bottom:6px;"><span class="badge badge-blue">' + q.topic + '</span></div>' +
+      '<div class="search-q">' + q.q + '</div>' +
+      '<div class="search-a">' + q.a + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+// ─── REVIEW ALL ───────────────────────────────────────────────────────────────
+function renderReview() {
+  var r = el('review-list');
+  if (r.childElementCount > 0) return;
+  r.innerHTML = DATA.map(function(topic, ti) {
+    var items = ALL.filter(function(q) { return q.topicIdx === ti; });
+    return '<details><summary>' + topic.t +
+      '<span style="font-weight:400;font-size:12px;color:var(--text3);margin-left:8px;">(' + items.length + ' Q)</span></summary>' +
+      '<div class="review-body">' +
+      items.map(function(q, i) {
+        return '<div class="review-item">' +
+          '<div class="rq-num">Q' + (i + 1) + '</div>' +
+          '<div class="rq-q">' + q.q + '</div>' +
+          '<div class="rq-a">' + q.a + '</div>' +
+          '</div>';
+      }).join('') +
+      '</div></details>';
+  }).join('');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderTopicGrid();
+updateStats();
+initFC();
+</script>
+</body>
+</html>
